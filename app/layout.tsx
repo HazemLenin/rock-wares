@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
 import AuthProvider from "./context/AuthProvider";
+import Navbar from "@/components/Navbar";
+import Sidebar from "@/components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +31,11 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<AuthProvider session={session}>{children}</AuthProvider>
+					<AuthProvider session={session}>
+						<Navbar />
+						<Sidebar />
+						<main className="pb-24 md:pb-0">{children}</main>
+					</AuthProvider>
 				</ThemeProvider>
 			</body>
 		</html>
