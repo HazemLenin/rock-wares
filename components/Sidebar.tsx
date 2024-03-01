@@ -13,11 +13,11 @@ export default function Sidebar() {
 	return (
 		<aside className="fixed flex md:flex-col justify-evenly items-center border-t md:border-t-0 md:border-r h-20 w-full md:h-full md:w-20 bottom-0 bg-background">
 			<Link href="/search" className="w-5 text-xl">
-				<FontAwesomeIcon icon={faSearch} color="white" />
+				<FontAwesomeIcon icon={faSearch} />
 			</Link>
 			<AuthButton />
 			<Link href="/about" className="w-5 text-xl">
-				<FontAwesomeIcon icon={faInfoCircle} color="white" />
+				<FontAwesomeIcon icon={faInfoCircle} />
 			</Link>
 		</aside>
 	);
