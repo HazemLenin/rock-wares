@@ -3,6 +3,7 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
 
 export const authOptions = {
 	providers: [
@@ -25,16 +26,14 @@ export const authOptions = {
 				// Add logic here to look up the user from the credentials supplied
 				// const user = { id: "1", name: "J Smith", email: "jsmith@example.com" };
 				const results = await db
-					.select({
-						id: users.id,
-						firstName: users.firstName,
-						lastName: users.lastName,
-						email: users.email,
-					})
+					.select()
 					.from(users)
 					.where(eq(users.email, credentials?.email ?? ""));
 
-				if (results[0]) {
+				if (
+					results[0] &&
+					(await bcrypt.compare(credentials?.password, results[0].passwordHash))
+				) {
 					// Any object returned will be saved in `user` property of the JWT
 					return {
 						id: results[0].id.toString(),
