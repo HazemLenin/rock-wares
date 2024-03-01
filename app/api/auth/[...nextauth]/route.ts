@@ -32,7 +32,10 @@ const authOptions = {
 
 				if (
 					results[0] &&
-					(await bcrypt.compare(credentials?.password, results[0].passwordHash))
+					(await bcrypt.compare(
+						credentials?.password ?? "",
+						results[0].passwordHash
+					))
 				) {
 					// Any object returned will be saved in `user` property of the JWT
 					return {
