@@ -11,7 +11,7 @@ import AuthButton from "./AuthButton";
 
 export default function Sidebar() {
 	return (
-		<aside className="fixed flex md:flex-col justify-center gap-28 items-center border h-20 w-full md:h-full md:w-20 bottom-0">
+		<aside className="fixed flex md:flex-col justify-evenly items-center border-t md:border-t-0 md:border-r h-20 w-full md:h-full md:w-20 bottom-0 bg-background">
 			<Link href="/search" className="w-5 text-xl">
 				<FontAwesomeIcon icon={faSearch} color="white" />
 			</Link>

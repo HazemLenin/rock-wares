@@ -5,6 +5,10 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
 import AuthProvider from "./context/AuthProvider";
+import Navbar from "@/components/Navbar";
+import Sidebar from "@/components/Sidebar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +33,17 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<AuthProvider session={session}>{children}</AuthProvider>
+					<AuthProvider session={session}>
+						<Navbar />
+						<Sidebar />
+						<div className="pb-24 md:pb-0">
+							<main className="mb-10">{children}</main>
+							<footer className="text-muted text-center py-2 border-t">
+								Hazem Lenin @ 2024
+							</footer>
+						</div>
+						<ToastContainer />
+					</AuthProvider>
 				</ThemeProvider>
 			</body>
 		</html>
