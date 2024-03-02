@@ -11,14 +11,14 @@ export default function Navbar() {
 					width={80}
 					height={50}
 					alt="Rock Wares Logo"
-					className="dark:hidden"
+					className="dark:hidden h-auto"
 				/>
 				<Image
 					src="/Rock Wares Logo Dark.jpg"
 					width={80}
 					height={50}
 					alt="Rock Wares Logo"
-					className="hidden dark:block"
+					className="hidden dark:block h-auto"
 				/>
 			</Link>
 			<ModeToggle />

@@ -64,13 +64,48 @@
 		--input: 215 27.9% 16.9%;
 		--ring: 216 12.2% 83.9%;
 	}
-}
-
-@layer base {
 	* {
 		@apply border-border;
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+}
+
+@layer components {
+	.product-caption {
+		@apply bg-background
+			text-white
+			dark:bg-white
+			dark:text-background
+			p-5
+			gap-2
+			items-start
+			
+			md:bg-transparent
+			md:dark:bg-transparent
+			md:text-white
+			md:dark:text-white
+			md:absolute
+			md:inset-0
+			md:w-full
+			md:h-full
+			md:flex
+			md:flex-col
+			md:justify-end
+
+			md:before:content-['']
+			md:before:absolute
+			md:before:inset-0
+			md:before:bg-gradient-to-t
+			md:before:from-black/70
+			md:before:to-transparent
+			md:before:z-10
+			md:opacity-0
+			md:hover:opacity-100
+			md:transition-opacity;
+	}
+	.product-caption * {
+		@apply z-20;
 	}
 }

@@ -1,2 +1,2 @@
 export { default } from "next-auth/middleware";
-export const config = { matcher: ["/secret"] };
+export const config = { matcher: ["/editProfile"] };
