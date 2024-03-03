@@ -45,8 +45,8 @@ export default function EditProfile() {
 	const router = useRouter();
 
 	useEffect(() => {
-		form.setValue("firstName", session?.user?.name?.split(" ")[0] ?? "");
-		form.setValue("lastName", session?.user?.name?.split(" ")[1] ?? "");
+		form.setValue("firstName", session?.user?.name?.split("|")[0] ?? "");
+		form.setValue("lastName", session?.user?.name?.split("|")[1] ?? "");
 		form.setValue("email", session?.user?.email ?? "");
 	}, [status]);
 
