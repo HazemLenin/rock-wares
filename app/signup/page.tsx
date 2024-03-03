@@ -63,8 +63,12 @@ export default function Signup() {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				toast.success(data.message);
-				router.push("/");
+				if (data.duplicatedEmail) {
+					toast.error(data.message);
+				} else {
+					toast.success(data.message);
+					router.push("/");
+				}
 			})
 			.catch((err) => {
 				console.error(err);
@@ -90,6 +94,8 @@ export default function Signup() {
 								<FormControl>
 									<Input placeholder="John" {...field} />
 								</FormControl>
+								<FormDescription></FormDescription>
+
 								<FormMessage />
 							</FormItem>
 						)}
@@ -103,6 +109,8 @@ export default function Signup() {
 								<FormControl>
 									<Input placeholder="Smith" {...field} />
 								</FormControl>
+								<FormDescription></FormDescription>
+
 								<FormMessage />
 							</FormItem>
 						)}
@@ -117,6 +125,8 @@ export default function Signup() {
 								<FormControl>
 									<Input placeholder="user@example.com" {...field} />
 								</FormControl>
+								<FormDescription></FormDescription>
+
 								<FormMessage />
 							</FormItem>
 						)}
@@ -130,6 +140,8 @@ export default function Signup() {
 								<FormControl>
 									<Input type="password" {...field} />
 								</FormControl>
+								<FormDescription></FormDescription>
+
 								<FormMessage />
 							</FormItem>
 						)}
@@ -143,6 +155,8 @@ export default function Signup() {
 								<FormControl>
 									<Input type="password" {...field} />
 								</FormControl>
+								<FormDescription></FormDescription>
+
 								<FormMessage />
 							</FormItem>
 						)}

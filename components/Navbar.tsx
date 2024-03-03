@@ -8,13 +8,17 @@ export default function Navbar() {
 			<Link href="/" className="text-xl">
 				<Image
 					src="/Rock Wares Logo Default.jpg"
+					width={80}
+					height={50}
 					alt="Rock Wares Logo"
-					className="dark:hidden w-20"
+					className="dark:hidden h-auto"
 				/>
 				<Image
 					src="/Rock Wares Logo Dark.jpg"
+					width={80}
+					height={50}
 					alt="Rock Wares Logo"
-					className="hidden dark:block w-20"
+					className="hidden dark:block h-auto"
 				/>
 			</Link>
 			<ModeToggle />

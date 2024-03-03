@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,15 +35,17 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<AuthProvider session={session}>
-						<Navbar />
-						<Sidebar />
-						<div className="pb-24 md:pb-0">
-							<main className="mb-10">{children}</main>
-							<footer className="text-muted text-center py-2 border-t">
-								Hazem Lenin @ 2024
-							</footer>
-						</div>
-						<ToastContainer />
+						<TooltipProvider>
+							<Navbar />
+							<Sidebar />
+							<div className="pb-24 md:pb-0 md:pl-20">
+								<main className="mb-10">{children}</main>
+								<footer className="text-muted text-center py-2 border-t">
+									Hazem Lenin @ 2024
+								</footer>
+							</div>
+							<ToastContainer />
+						</TooltipProvider>
 					</AuthProvider>
 				</ThemeProvider>
 			</body>
