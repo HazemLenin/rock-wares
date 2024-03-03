@@ -40,7 +40,7 @@ const authOptions = {
 					// Any object returned will be saved in `user` property of the JWT
 					return {
 						id: results[0].id.toString(),
-						name: results[0].firstName + " " + results[0].lastName,
+						name: results[0].firstName + "|" + results[0].lastName,
 						email: results[0].email,
 					};
 				} else {

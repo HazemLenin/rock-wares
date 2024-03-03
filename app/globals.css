@@ -73,6 +73,10 @@
 }
 
 @layer components {
+	.skeleton {
+		@apply bg-gray-500 animate-pulse rounded-lg;
+	}
+
 	.product-caption {
 		@apply bg-background
 			text-white

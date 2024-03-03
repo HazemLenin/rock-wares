@@ -1,9 +1,9 @@
 import { db } from "@/db";
 import { users } from "@/db/schema";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
 	const data = await req.json();
 
 	const saltRounds = 10;

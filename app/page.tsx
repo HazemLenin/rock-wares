@@ -60,13 +60,13 @@ export default function Home() {
 			</section>
 
 			<section>
-				<h1 className="text-4xl font-bold text-center mb-5">Featured</h1>
+				<h1 className="text-4xl font-semibold text-center mb-5">Featured</h1>
 				<div className="ml-2 md:ml-10">
 					<Carousel opts={{ loop: true }} className="w-2/3 mx-auto">
 						<CarouselContent>
 							{products.map((product) => (
 								<CarouselItem className="md:basis-1/2">
-									<ProductCard {...product} />
+									<ProductCard key={product.id} {...product} />
 								</CarouselItem>
 							))}
 						</CarouselContent>
@@ -74,7 +74,6 @@ export default function Home() {
 						<CarouselNext />
 					</Carousel>
 				</div>
-				s
 			</section>
 		</>
 	);
