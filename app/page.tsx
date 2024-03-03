@@ -65,8 +65,8 @@ export default function Home() {
 					<Carousel opts={{ loop: true }} className="w-2/3 mx-auto">
 						<CarouselContent>
 							{products.map((product) => (
-								<CarouselItem className="md:basis-1/2">
-									<ProductCard key={product.id} {...product} />
+								<CarouselItem className="md:basis-1/2" key={product.id}>
+									<ProductCard {...product} />
 								</CarouselItem>
 							))}
 						</CarouselContent>
