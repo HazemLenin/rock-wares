@@ -159,7 +159,7 @@ export default function EditProfile() {
 										<Input disabled readOnly {...field} />
 									</FormControl>
 									<FormDescription>
-										You can't change your email.
+										You cannot change your email.
 									</FormDescription>
 									<FormMessage />
 								</FormItem>
