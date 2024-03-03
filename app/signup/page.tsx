@@ -63,8 +63,12 @@ export default function Signup() {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				toast.success(data.message);
-				router.push("/");
+				if (data.duplicatedEmail) {
+					toast.error(data.message);
+				} else {
+					toast.success(data.message);
+					router.push("/");
+				}
 			})
 			.catch((err) => {
 				console.error(err);

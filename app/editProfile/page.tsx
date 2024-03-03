@@ -2,6 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+import {
 	Form,
 	FormControl,
 	FormDescription,
@@ -41,7 +50,8 @@ export default function EditProfile() {
 			email: session?.user?.email ?? "",
 		},
 	});
-	const [loading, setLoading] = useState(false);
+	const [updateLoading, setUpdateLoading] = useState(false);
+	const [deleteLoading, setDeleteLoading] = useState(false);
 	const router = useRouter();
 
 	useEffect(() => {
@@ -51,7 +61,7 @@ export default function EditProfile() {
 	}, [status]);
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		setLoading(true);
+		setUpdateLoading(true);
 		fetch("/api/user/editProfile", {
 			method: "post",
 			body: JSON.stringify({
@@ -72,7 +82,22 @@ export default function EditProfile() {
 				console.error(err);
 				toast.error("Something went wrong!");
 			})
-			.finally(() => setLoading(false));
+			.finally(() => setUpdateLoading(false));
+	}
+
+	function deleteAccount() {
+		setDeleteLoading(true);
+		fetch("/api/user/deleteProfile", { method: "post" })
+			.then((res) => res.json())
+			.then((data) => {
+				toast.success(data.message);
+				signOut();
+			})
+			.catch((err) => {
+				console.error(err);
+				toast.error("Something went wrong!");
+			})
+			.finally(() => setDeleteLoading(false));
 	}
 
 	return (
@@ -140,9 +165,43 @@ export default function EditProfile() {
 								</FormItem>
 							)}
 						/>
-						<Button type="submit" className="w-full md:w-auto mx-4 md:mx-0">
-							{loading ? <FontAwesomeIcon icon={faCircleNotch} spin /> : "Save"}
-						</Button>
+						<div className="flex flex-col md:flex-row justify-center gap-5 w-full mx-4 md:mx-0">
+							<Button type="submit" className="w-full md:w-auto">
+								{updateLoading ? (
+									<FontAwesomeIcon icon={faCircleNotch} spin />
+								) : (
+									"Save"
+								)}
+							</Button>
+							<Dialog>
+								<DialogTrigger asChild>
+									<Button
+										type="button"
+										variant="destructive"
+										className="w-full md:w-auto"
+									>
+										Delete
+									</Button>
+								</DialogTrigger>
+								<DialogContent className="sm:max-w-[425px]">
+									<DialogHeader>
+										<DialogTitle>Delete Profile</DialogTitle>
+										<DialogDescription>
+											Are you sure that you want to delete your profile?
+										</DialogDescription>
+									</DialogHeader>
+									<DialogFooter>
+										<Button type="button" onClick={deleteAccount}>
+											{deleteLoading ? (
+												<FontAwesomeIcon icon={faCircleNotch} spin />
+											) : (
+												"Delete"
+											)}
+										</Button>
+									</DialogFooter>
+								</DialogContent>
+							</Dialog>
+						</div>
 					</form>
 				</Form>
 			)}
