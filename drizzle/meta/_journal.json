@@ -15,6 +15,13 @@
       "when": 1709423087344,
       "tag": "0001_strong_caretaker",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1709488983475,
+      "tag": "0002_nostalgic_white_queen",
+      "breakpoints": true
     }
   ]
 }

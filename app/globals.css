@@ -109,7 +109,29 @@
 			md:hover:opacity-100
 			md:transition-opacity;
 	}
-	.product-caption * {
+
+	.band-caption {
+		@apply flex
+		flex-col
+		gap-2
+		justify-end
+		items-start
+		w-full
+		h-full
+		p-2
+		absolute
+		inset-0
+		before:content-['']
+		before:absolute
+		before:inset-0
+		before:bg-gradient-to-t
+		before:from-black/70
+		before:to-transparent
+		before:z-10;
+	}
+
+	.product-caption *,
+	.band-caption * {
 		@apply z-20;
 	}
 }

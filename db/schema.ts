@@ -68,6 +68,7 @@ export const categoriesRelations = relations(categories, ({ many }) => ({
 export const bands = pgTable("bands", {
 	id: serial("id").primaryKey(),
 	name: text("name").notNull(),
+	image: text("image").notNull(),
 });
 
 export const bandsRelations = relations(bands, ({ many }) => ({

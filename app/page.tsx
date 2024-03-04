@@ -8,6 +8,7 @@ import {
 import Banner from "@/components/home/Banner";
 import ProductCard from "@/components/ProductCard";
 import { map } from "zod";
+import BandCard from "@/components/home/BandCard";
 
 const products = [
 	{
@@ -52,6 +53,34 @@ const products = [
 	},
 ];
 
+const bands = [
+	{
+		id: 1,
+		name: "Band 1",
+		image: "hello",
+	},
+	{
+		id: 2,
+		name: "Band 2",
+		image: "hello",
+	},
+	{
+		id: 3,
+		name: "Band 3",
+		image: "hello",
+	},
+	{
+		id: 4,
+		name: "Band 4",
+		image: "hello",
+	},
+	{
+		id: 5,
+		name: "Band 5",
+		image: "hello",
+	},
+];
+
 export default function Home() {
 	return (
 		<>
@@ -73,6 +102,15 @@ export default function Home() {
 						<CarouselPrevious />
 						<CarouselNext />
 					</Carousel>
+				</div>
+			</section>
+
+			<section className="mx-2 md:ml-10 md:mr-0">
+				<h1 className="text-4xl font-semibold mb-5">Bands</h1>
+				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+					{bands.map((band) => (
+						<BandCard key={band.id} {...band} />
+					))}
 				</div>
 			</section>
 		</>

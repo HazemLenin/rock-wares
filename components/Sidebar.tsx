@@ -17,7 +17,7 @@ import { Button } from "./ui/button";
 
 export default function Sidebar() {
 	return (
-		<aside className="fixed flex md:flex-col justify-evenly items-center border-t md:border-t-0 md:border-r h-20 w-full md:h-full md:w-20 bottom-0 bg-background">
+		<aside className="fixed flex md:flex-col justify-evenly items-center border-t md:border-t-0 md:border-r h-20 w-full md:h-full md:w-20 bottom-0 bg-background z-50">
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<Link href="/search" className="w-5 text-xl">
