@@ -1,171 +1,206 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-
-const formSchema = z
-	.object({
-		firstName: z.string().min(1, { message: "First name is required." }),
-		lastName: z.string().min(1, { message: "Last name is required." }),
-		email: z.string().email().min(1, { message: "Email is required." }),
-		password: z.string().min(8, {
-			message: "The password should be equal to or more than 8 characters.",
-		}),
-		confirmPassword: z
-			.string()
-			.min(1, { message: "Password confirmation is required." }),
-	})
-	.refine((data) => data.password === data.confirmPassword, {
-		message: "Passwords don't match",
-		path: ["confirmPassword"],
-	});
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import bcrypt from "bcrypt";
+import { eq } from "drizzle-orm";
+import { Button } from "@/components/ui/button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Input } from "@/components/ui/input";
+import { checkEmailDuplicated, createUser } from "./actions";
+import { FormEvent, FormEventHandler, useRef, useState } from "react";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 export default function Signup() {
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
-		defaultValues: {
-			firstName: "",
-			lastName: "",
-			email: "",
-			password: "",
-			confirmPassword: "",
+	const [checkingEmail, setCheckingEmail] = useState(false);
+	const form = useRef<HTMLFormElement>(null);
+	const [fields, setFields] = useState({
+		firstName: {
+			ref: useRef<HTMLInputElement>(null),
+			errors: Array<string>(),
+		},
+		lastName: {
+			ref: useRef<HTMLInputElement>(null),
+			errors: Array<string>(),
+		},
+		email: {
+			ref: useRef<HTMLInputElement>(null),
+			errors: Array<string>(),
+		},
+		password: {
+			ref: useRef<HTMLInputElement>(null),
+			errors: Array<string>(),
+		},
+		confirmPassword: {
+			ref: useRef<HTMLInputElement>(null),
+			errors: Array<string>(),
 		},
 	});
 	const [loading, setLoading] = useState(false);
-	const router = useRouter();
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	function isValid() {
+		return (
+			fields.firstName.errors.length == 0 &&
+			fields.lastName.errors.length == 0 &&
+			fields.email.errors.length == 0 &&
+			fields.password.errors.length == 0 &&
+			fields.confirmPassword.errors.length == 0
+		);
+	}
+
+	async function handleSubmit(e: FormEvent) {
+		e.preventDefault();
+
 		setLoading(true);
-		fetch("/api/auth/signup", {
-			method: "post",
-			body: JSON.stringify({
-				firstName: values.firstName,
-				lastName: values.lastName,
-				email: values.email,
-				password: values.password,
-			}),
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				if (data.duplicatedEmail) {
-					toast.error(data.message);
-				} else {
-					toast.success(data.message);
-					router.push("/");
-				}
-			})
-			.catch((err) => {
-				console.error(err);
-				toast.error("Something went wrong!");
-			})
-			.finally(() => setLoading(false));
+
+		if (checkingEmail) {
+			setLoading(false);
+			return;
+		}
+
+		fields.firstName.errors = [];
+		fields.lastName.errors = [];
+		fields.email.errors = [];
+		fields.password.errors = [];
+		fields.confirmPassword.errors = [];
+
+		await handleCheckEmail(fields.email.ref.current?.value ?? "");
+
+		console.log("check validation");
+		if (fields.firstName.ref.current?.value === "")
+			fields.firstName.errors = ["First name is required"];
+
+		if (fields.lastName.ref.current?.value === "")
+			fields.lastName.errors = ["Last name is required"];
+
+		if (fields.email.ref.current?.value === "")
+			fields.email.errors = ["Email is required"];
+
+		if (fields.password.ref.current?.value === "")
+			fields.password.errors = ["Password is required"];
+
+		if (fields.confirmPassword.ref.current?.value === "")
+			fields.confirmPassword.errors = ["Confirm password is required"];
+
+		if (!isValid()) {
+			setLoading(false);
+			return;
+		}
+
+		form.current?.submit();
+	}
+
+	async function handleCheckEmail(email: string) {
+		setCheckingEmail(true);
+		const isDuplicated = await checkEmailDuplicated(email);
+		fields.email.errors = [];
+		if (isDuplicated)
+			fields.email.errors = [
+				...fields.email.errors,
+				"There is already an account with the same email.",
+			];
+		setCheckingEmail(false);
 	}
 
 	return (
 		<div className="flex justify-center pt-5 px-2">
-			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit(onSubmit)}
-					className="flex flex-col items-center justify-around gap-5 py-5 px-4 w-full md:w-1/3 border rounded-lg"
-				>
-					<h1 className="text-4xl font-bold">Signup</h1>
-					<FormField
-						control={form.control}
+			<form
+				action={createUser}
+				onSubmit={handleSubmit}
+				noValidate
+				ref={form}
+				className="flex flex-col items-center justify-around gap-5 py-5 px-4 w-full md:w-1/3 border rounded-lg"
+			>
+				<h1 className="text-4xl font-bold">Signup</h1>
+				<div className="md:w-full">
+					<label htmlFor="firstName" className="mb-2 block">
+						First Name
+					</label>
+					<Input
+						className="mb-2"
 						name="firstName"
-						render={({ field }) => (
-							<FormItem className="md:w-full">
-								<FormLabel>First Name</FormLabel>
-								<FormControl>
-									<Input placeholder="John" {...field} />
-								</FormControl>
-								<FormDescription></FormDescription>
-
-								<FormMessage />
-							</FormItem>
-						)}
+						ref={fields.firstName.ref}
+						placeholder="John"
 					/>
-					<FormField
-						control={form.control}
+					{fields.firstName.errors.length > 0 &&
+						fields.firstName.errors.map((err) => (
+							<p className="text-destructive">{err}</p>
+						))}
+				</div>
+
+				<div className="md:w-full">
+					<label htmlFor="lastName" className="mb-2 block">
+						Last Name
+					</label>
+					<Input
+						className="mb-2"
 						name="lastName"
-						render={({ field }) => (
-							<FormItem className="md:w-full">
-								<FormLabel>Last Name</FormLabel>
-								<FormControl>
-									<Input placeholder="Smith" {...field} />
-								</FormControl>
-								<FormDescription></FormDescription>
-
-								<FormMessage />
-							</FormItem>
-						)}
+						ref={fields.lastName.ref}
+						placeholder="Smith"
 					/>
+					{fields.lastName.errors.length > 0 &&
+						fields.lastName.errors.map((err) => (
+							<p className="text-destructive">{err}</p>
+						))}
+				</div>
 
-					<FormField
-						control={form.control}
+				<div className="md:w-full">
+					<label htmlFor="email" className="mb-2 block">
+						Email
+					</label>
+					<Input
+						className="mb-2"
+						type="email"
 						name="email"
-						render={({ field }) => (
-							<FormItem className="md:w-full">
-								<FormLabel>Email</FormLabel>
-								<FormControl>
-									<Input placeholder="user@example.com" {...field} />
-								</FormControl>
-								<FormDescription></FormDescription>
-
-								<FormMessage />
-							</FormItem>
-						)}
+						ref={fields.email.ref}
+						onChange={() =>
+							handleCheckEmail(fields.email.ref.current?.value ?? "")
+						}
+						placeholder="user@example.com"
 					/>
-					<FormField
-						control={form.control}
+					{checkingEmail && <p className="text-muted">Checking email...</p>}
+					{fields.email.errors.length > 0 &&
+						fields.email.errors.map((err) => (
+							<p className="text-destructive">{err}</p>
+						))}
+				</div>
+
+				<div className="md:w-full">
+					<label htmlFor="password" className="mb-2 block">
+						Password
+					</label>
+					<Input
+						className="mb-2"
 						name="password"
-						render={({ field }) => (
-							<FormItem className="md:w-full">
-								<FormLabel>Password</FormLabel>
-								<FormControl>
-									<Input type="password" {...field} />
-								</FormControl>
-								<FormDescription></FormDescription>
-
-								<FormMessage />
-							</FormItem>
-						)}
+						ref={fields.password.ref}
+						type="password"
 					/>
-					<FormField
-						control={form.control}
+					{fields.password.errors.length > 0 &&
+						fields.password.errors.map((err) => (
+							<p className="text-destructive">{err}</p>
+						))}
+				</div>
+
+				<div className="md:w-full">
+					<label htmlFor="confirmPassword" className="mb-2 block">
+						Confirm Password
+					</label>
+					<Input
+						className="mb-2"
 						name="confirmPassword"
-						render={({ field }) => (
-							<FormItem className="md:w-full">
-								<FormLabel>Confirm Password</FormLabel>
-								<FormControl>
-									<Input type="password" {...field} />
-								</FormControl>
-								<FormDescription></FormDescription>
-
-								<FormMessage />
-							</FormItem>
-						)}
+						ref={fields.confirmPassword.ref}
+						type="password"
 					/>
-					<Button type="submit" className="w-full mx-4">
-						{loading ? <FontAwesomeIcon icon={faCircleNotch} spin /> : "Singup"}
-					</Button>
-				</form>
-			</Form>
+					{fields.confirmPassword.errors.length > 0 &&
+						fields.confirmPassword.errors.map((err) => (
+							<p className="text-destructive">{err}</p>
+						))}
+				</div>
+
+				<Button type="submit" className="w-full mx-4">
+					{loading ? <FontAwesomeIcon icon={faCircleNotch} spin /> : "Signup"}
+				</Button>
+			</form>
 		</div>
 	);
 }

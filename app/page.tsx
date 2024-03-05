@@ -88,7 +88,7 @@ export default function Home() {
 				<Banner />
 			</section>
 
-			<section>
+			<section className="mb-5">
 				<h1 className="text-4xl font-semibold text-center mb-5">Featured</h1>
 				<div className="ml-2 md:ml-10">
 					<Carousel opts={{ loop: true }} className="w-2/3 mx-auto">
@@ -105,7 +105,7 @@ export default function Home() {
 				</div>
 			</section>
 
-			<section className="mx-2 md:ml-10 md:mr-0">
+			<section className="mx-2 md:mx-10">
 				<h1 className="text-4xl font-semibold mb-5">Bands</h1>
 				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
 					{bands.map((band) => (
